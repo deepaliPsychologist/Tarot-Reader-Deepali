@@ -6,11 +6,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar, Clock, Mail, Phone, MapPin } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Hero from "@/components/Hero";
+import emailjs from "emailjs-com";
+
 const Contact = () => {
   const {
     toast
   } = useToast();
   const [formData, setFormData] = useState({
+    title:"",
     name: "",
     email: "",
     phone: "",
@@ -35,21 +38,36 @@ const Contact = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send the form data to a server
-    console.log("Form submitted:", formData);
-    toast({
-      title: "Message Sent!",
-      description: "Thank you for your interest. I will get back to you soon."
-    });
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      service: "",
-      message: ""
+  
+    emailjs.send(
+      "service_sqss71z",
+      "template_844xjv4",
+      formData,
+      "jtRL6zqrzCOEH4Ni0"
+    )
+    .then(() => {
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your interest. I will get back to you soon.",
+      });
+      setFormData({
+        title:"New Message From Site",
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: ""
+      });
+    })
+    .catch((error) => {
+      console.error("EmailJS error:", error);
+      toast({
+        title: "Oops!",
+        description: "Something went wrong. Please try again.",
+      });
     });
   };
+  
   return <div className="min-h-screen">
       <Hero title="Book Your Reading" subtitle="Connect with me to schedule your personalized tarot reading session" backgroundImage="/contact-background.jpg" />
 
